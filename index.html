@@ -1,0 +1,502 @@
+<!DOCTYPE html>
+<html lang="pap">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>AI pa Nos Hobenan — Propuesta BMC / Ministerio di VVRP</title>
+<style>
+  :root{
+    --ink:#1A140F; --cream:#F2EBDF; --accent:#FF6B2B; --muted:#6B6259;
+    --line:#DDD3C4; --paper:#FBF7F0;
+  }
+  *{box-sizing:border-box;}
+  html,body{margin:0;padding:0;background:var(--paper);color:var(--ink);
+    font-family:-apple-system,BlinkMacSystemFont,"Segoe UI",Inter,Helvetica,Arial,sans-serif;
+    -webkit-text-size-adjust:100%;}
+  /* ---------- language switch: pure CSS, no JS ---------- */
+  #langsw{position:absolute;left:-9999px;width:1px;height:1px;opacity:0;}
+  #doc .en{display:none;}
+  #doc .pap{display:inline;}
+  #langsw:checked ~ #doc .pap{display:none;}
+  #langsw:checked ~ #doc .en{display:inline;}
+  #langbar{position:fixed;top:12px;right:12px;z-index:99;display:flex;gap:2px;
+    background:#fff;border:1px solid var(--line);border-radius:999px;padding:3px;
+    cursor:pointer;user-select:none;box-shadow:0 2px 10px rgba(26,20,15,.08);}
+  #langbar span{font-size:12px;font-weight:700;letter-spacing:.08em;padding:6px 12px;
+    border-radius:999px;color:#B9AFA2;}
+  #langbar .lb-pap{background:var(--accent);color:#fff;}
+  #langsw:checked ~ #langbar .lb-pap{background:transparent;color:#B9AFA2;}
+  #langsw:checked ~ #langbar .lb-en{background:var(--accent);color:#fff;}
+  /* ---------- layout ---------- */
+  .wrap{max-width:860px;margin:0 auto;padding:0 22px;}
+  section{padding:54px 0;border-bottom:1px solid var(--line);}
+  section:last-child{border-bottom:0;}
+  .eyebrow{font-size:12px;font-weight:800;letter-spacing:.16em;text-transform:uppercase;
+    color:var(--accent);margin:0 0 14px;}
+  h1{font-size:clamp(40px,10vw,66px);line-height:.98;letter-spacing:-.03em;margin:0 0 20px;font-weight:800;}
+  h2{font-size:clamp(26px,5.4vw,38px);line-height:1.08;letter-spacing:-.02em;margin:0 0 18px;font-weight:800;}
+  h3{font-size:17px;margin:0 0 6px;font-weight:700;line-height:1.25;}
+  p{font-size:17px;line-height:1.62;color:#3A322B;margin:0 0 16px;}
+  .lead{font-size:19px;color:#4A4139;}
+  small,.small{font-size:14px;color:var(--muted);line-height:1.55;}
+  .chips{display:flex;flex-wrap:wrap;gap:8px;margin:22px 0 0;}
+  .chip{background:var(--cream);border-radius:999px;padding:9px 16px;font-size:13px;font-weight:700;}
+  .callout{border-left:3px solid var(--accent);background:#F4EEE6;border-radius:0 12px 12px 0;
+    padding:18px 20px;margin:24px 0 0;}
+  .callout p{margin:0;font-size:15.5px;color:#4A4139;}
+  .grid{display:grid;gap:14px;margin-top:24px;}
+  .g2{grid-template-columns:1fr 1fr;}
+  .g3{grid-template-columns:repeat(3,1fr);}
+  .card{background:#fff;border:1px solid var(--line);border-radius:14px;padding:20px;}
+  .card .k{font-size:11px;font-weight:800;letter-spacing:.14em;text-transform:uppercase;
+    color:var(--accent);margin:0 0 8px;}
+  .card p{font-size:15px;margin:0;color:#4A4139;}
+  table{width:100%;border-collapse:collapse;margin-top:22px;}
+  td,th{padding:14px 4px;border-bottom:1px solid var(--line);vertical-align:top;text-align:left;
+    font-size:15.5px;line-height:1.5;}
+  th{font-size:11px;font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);}
+  td.wk{font-weight:800;width:96px;white-space:nowrap;}
+  td.amt{text-align:right;white-space:nowrap;font-weight:800;width:120px;}
+  tr.opt td{border-top:1px dashed var(--line);border-bottom:0;color:var(--muted);}
+  tr.tot td{border-bottom:0;font-weight:800;}
+  .num{display:inline-flex;align-items:center;justify-content:center;width:26px;height:26px;
+    border-radius:8px;background:var(--cream);color:var(--accent);font-weight:800;font-size:13px;
+    margin-right:10px;flex:none;}
+  .item{display:flex;gap:0;align-items:flex-start;background:#fff;border:1px solid var(--line);
+    border-radius:14px;padding:16px 18px;}
+  .item .bd{flex:1;}
+  .item p{font-size:14.5px;margin:0;color:#4A4139;}
+  /* investment boxes */
+  .pboxes{display:grid;grid-template-columns:repeat(3,1fr);gap:14px;margin-top:22px;}
+  .pbox{background:#fff;border:1px solid var(--line);border-radius:14px;padding:20px;}
+  .pbox.hero{border:2px solid var(--accent);}
+  .pbox .v{font-size:30px;font-weight:800;letter-spacing:-.02em;line-height:1;margin:0 0 6px;}
+  .pbox .l{font-size:13px;color:var(--muted);margin:0;}
+  /* dark ask section */
+  .dark{background:var(--ink);color:var(--cream);border-bottom:0;}
+  .dark h2{color:#fff;}
+  .dark p{color:#C9BFB3;}
+  .dark .eyebrow{color:var(--accent);}
+  .dark .askrow{display:flex;gap:0;align-items:flex-start;padding:18px 0;border-bottom:1px solid #35291F;}
+  .dark .askrow:last-of-type{border-bottom:0;}
+  .dark .num{background:#2A2018;color:var(--accent);}
+  .dark .num.paid{background:var(--accent);color:#fff;}
+  .dark h3{color:#fff;}
+  .dark .stats{display:grid;grid-template-columns:repeat(4,1fr);gap:12px;margin-top:26px;}
+  .dark .stat{background:#241B14;border-radius:12px;padding:18px;}
+  .dark .stat .v{font-size:25px;font-weight:800;letter-spacing:-.02em;margin:0 0 4px;color:#fff;}
+  .dark .stat .l{font-size:12px;color:#9C9084;margin:0;}
+  .dark .callout{background:#241B14;border-left-color:var(--accent);}
+  .dark .callout p{color:#C9BFB3;}
+  /* certificate */
+  .cert{background:#fff;border:1px solid var(--line);border-radius:16px;padding:26px;margin-top:22px;}
+  .cert.main{border:2px solid var(--ink);}
+  .cert.alt{background:#F4EEE6;}
+  .logos{display:flex;align-items:center;gap:22px;flex-wrap:wrap;margin-top:20px;
+    padding-top:18px;border-top:1px solid var(--line);}
+  .logos img{height:38px;width:auto;}
+  .sig{flex:1;min-width:150px;border-bottom:1px solid var(--line);height:34px;}
+  .foot{padding:34px 0 60px;color:var(--muted);font-size:13px;}
+  @media(max-width:680px){
+    .g2,.g3,.pboxes{grid-template-columns:1fr;}
+    .dark .stats{grid-template-columns:1fr 1fr;}
+    section{padding:40px 0;}
+    td.amt{width:auto;}
+  }
+</style>
+</head>
+<body>
+
+<input type="checkbox" id="langsw" aria-label="Language / Idioma">
+<label for="langsw" id="langbar"><span class="lb-pap">PAP</span><span class="lb-en">ENG</span></label>
+
+<div id="doc">
+
+<!-- 1. COVER -->
+<section>
+  <div class="wrap">
+    <p class="eyebrow"><span class="pap">Propuesta</span><span class="en">Proposal</span></p>
+    <h1>AI pa Nos Hobenan</h1>
+    <p class="lead">
+      <span class="pap">Un kurso di shete siman di inteligensia artifisial na Papiamentu — grátis pa e partisipantenan, pa 20 hóben di Kòrsou. Kada un ta sali ku algu ku e mes a traha i ku e por usa, i ku un sertifikado konhunto di Ministerio di VVRP i BMC.</span>
+      <span class="en">A seven-week artificial-intelligence course in Papiamentu — free for the participants, for 20 young people in Curaçao. Everyone leaves with something they built themselves and can actually use, plus a joint certificate from the Ministry of VVRP and BMC.</span>
+    </p>
+    <div class="chips">
+      <span class="chip"><span class="pap">Presentá na: Ministerio di VVRP</span><span class="en">Presented to: Ministry of VVRP</span></span>
+      <span class="chip"><span class="pap">Pa: Bakhuis Management &amp; Consultancy</span><span class="en">By: Bakhuis Management &amp; Consultancy</span></span>
+      <span class="chip"><span class="pap">Ougùstùs 2026</span><span class="en">August 2026</span></span>
+    </div>
+    <div class="callout"><p>
+      <span class="pap"><b>Basá riba fundeshi internashonal.</b> E kurso ta basá riba e <i>UNESCO AI Competency Framework for Students</i> (2024) i riba e struktura di <i>Elements of AI</i> (Universidat di Helsinki) — no riba un programa inventá.</span>
+      <span class="en"><b>Built on international foundations.</b> The course is based on the <i>UNESCO AI Competency Framework for Students</i> (2024) and on the structure of <i>Elements of AI</i> (University of Helsinki) — not on an invented programme.</span>
+    </p></div>
+  </div>
+</section>
+
+<!-- 2. WHAT THE COURSE INVOLVES -->
+<section>
+  <div class="wrap">
+    <p class="eyebrow"><span class="pap">E kurso</span><span class="en">The course</span></p>
+    <h2><span class="pap">Kiko e kurso ta insera?</span><span class="en">What does the course involve?</span></h2>
+    <div class="grid g3">
+      <div class="card">
+        <p class="k">01 · <span class="pap">Telefòn</span><span class="en">Phone</span></p>
+        <h3><span class="pap">Telefòn ta sufisiente</span><span class="en">A phone is enough</span></h3>
+        <p><span class="pap">Úniko kos ku e kursista mester bini kuné ta su telefòn. Laptop ta opshonal.</span>
+           <span class="en">The only thing a participant needs to bring is their phone. A laptop is optional.</span></p>
+      </div>
+      <div class="card">
+        <p class="k">02 · <span class="pap">Nivel</span><span class="en">Level</span></p>
+        <h3><span class="pap">Sin konosementu tékniko</span><span class="en">No technical background</span></h3>
+        <p><span class="pap">No tin mester di eksperensia tékniko.</span>
+           <span class="en">No technical experience is required.</span></p>
+      </div>
+      <div class="card">
+        <p class="k">03 · <span class="pap">Ritmo</span><span class="en">Rhythm</span></p>
+        <h3><span class="pap">Dos ora pa siman</span><span class="en">Two hours a week</span></h3>
+        <p><span class="pap">Shete siman, dos ora kada siman, tur na Papiamentu. 20 partisipante.</span>
+           <span class="en">Seven weeks, two hours each week, entirely in Papiamentu. 20 participants.</span></p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 3. FOUNDATION -->
+<section>
+  <div class="wrap">
+    <p class="eyebrow"><span class="pap">Fundeshi</span><span class="en">Foundation</span></p>
+    <h2><span class="pap">Nos no a inventá e programa — nos a adaptá loke ta traha kaba</span>
+        <span class="en">We did not invent the programme — we adapted what already works</span></h2>
+    <div class="grid g2">
+      <div class="card">
+        <p class="k">UNESCO</p>
+        <h3>AI Competency Framework for Students (2024)</h3>
+        <p><span class="pap">12 kompetensia den 4 dimenshon (mentalidat sentrá riba hende · étika di AI · téknika i aplikashon · diseño di sistema), na 3 nivel: Komprendé → Apliká → Krea. Kada módulo di nos kurso ta mará na un dimenshon i un nivel.</span>
+           <span class="en">12 competencies across 4 dimensions (human-centred mindset · ethics of AI · AI techniques and applications · AI system design), at 3 levels: Understand → Apply → Create. Every module of our course is tied to one dimension and one level.</span></p>
+      </div>
+      <div class="card">
+        <p class="k">Helsinki</p>
+        <h3>Elements of AI</h3>
+        <p><span class="pap">E kurso di AI grátis di mas konosí na mundu — Universidat di Helsinki, 2018, mas ku 2 mion studiante den 170 pais, na 26 idioma.</span>
+           <span class="en">The best-known free AI course in the world — University of Helsinki, 2018, more than 2 million students across 170 countries, in 26 languages.</span></p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 4. WHAT THEY MAKE -->
+<section>
+  <div class="wrap">
+    <p class="eyebrow"><span class="pap">Loke nan ta traha</span><span class="en">What they make</span></p>
+    <h2><span class="pap">Kada kursista ta kaba e kurso ku algu ku e por usa</span>
+        <span class="en">Every participant finishes the course with something they can use</span></h2>
+    <p>
+      <span class="pap">Nos no ta pidi nan traha un aplikashon. Na siman 2 nan ta skohe for di un lista di ehèmpelnan konkreto i nan ta adaptá esaki na nan mes situashon. E regla ta simpel: mester ta un kos ku bo lo usa di bèrdè otro luna.</span>
+      <span class="en">We are not asking them to build an app. In week 2 they choose from a list of concrete examples and adapt it to their own situation. The rule is simple: it has to be something you will genuinely use next month.</span>
+    </p>
+    <div class="grid g2">
+      <div class="item"><span class="num">1</span><div class="bd">
+        <h3><span class="pap">Un plan di estudio</span><span class="en">A study plan</span></h3>
+        <p><span class="pap">Pa yud'é ku su estudionan di skol.</span><span class="en">To help them with their schoolwork.</span></p></div></div>
+      <div class="item"><span class="num">2</span><div class="bd">
+        <h3><span class="pap">Un CV i karta di solisitut</span><span class="en">A CV and cover letter</span></h3>
+        <p><span class="pap">Pa yud'é hanja trabou.</span><span class="en">To help them find a job.</span></p></div></div>
+      <div class="item"><span class="num">3</span><div class="bd">
+        <h3><span class="pap">Un plan di redes sosial</span><span class="en">A social-media plan</span></h3>
+        <p><span class="pap">Pa un negoshi di famia of pa e kos ku e ta bende banda.</span><span class="en">For a family business or for whatever they sell on the side.</span></p></div></div>
+      <div class="item"><span class="num">4</span><div class="bd">
+        <h3><span class="pap">Un karta ofisial kontestá</span><span class="en">An official letter, answered</span></h3>
+        <p><span class="pap">Un karta di bèrdè — di banko, SVB, skol, seguro of hür — komprondí i kontestá.</span><span class="en">A real letter — from the bank, SVB, school, insurer or landlord — understood and answered.</span></p></div></div>
+      <div class="item"><span class="num">5</span><div class="bd">
+        <h3><span class="pap">Preparashon pa un entrevista</span><span class="en">Interview preparation</span></h3>
+        <p><span class="pap">Praktiká e entrevista, i sali ku e preguntanan ku e mester hasi.</span><span class="en">Practise the interview, and leave with the questions they should ask.</span></p></div></div>
+      <div class="item"><span class="num">6</span><div class="bd">
+        <h3><span class="pap">Un tarea ku ta ripití</span><span class="en">A repeating task</span></h3>
+        <p><span class="pap">Un kos ku e ta hasi tur siman i ku AI por hasi mas lihé.</span><span class="en">Something they do every week that AI can make faster.</span></p></div></div>
+    </div>
+    <div class="callout"><p>
+      <span class="pap"><b>Ken ku ke, por traha na pareha.</b> Dos hende, un kos, i tur dos ta presentá. Asina ningun hende ta keda pegá pasobra e no sa kon kuminsá su so.</span>
+      <span class="en"><b>Anyone who wants to can work in pairs.</b> Two people, one piece of work, and both present. That way nobody gets stuck because they don't know how to start alone.</span>
+    </p></div>
+  </div>
+</section>
+
+<!-- 5. CO-DESIGN -->
+<section>
+  <div class="wrap">
+    <p class="eyebrow"><span class="pap">Ko-diseño</span><span class="en">Co-design</span></p>
+    <h2><span class="pap">E partisipantenan ta yuda forma e kurso</span><span class="en">The participants help shape the course</span></h2>
+    <p>
+      <span class="pap">Nos ta diseñá e kurso asina ku nos ta tene kuenta ku loke ta e nesesidat di e kursistanan. Nos ta siña e kursistanan e kosnan básiko di AI, pero tambe nos ta wak ki nesesidat tin i nos ta adaptá e kurso a base di esaki.</span>
+      <span class="en">We design the course around what the participants actually need. We teach them the basics of AI, but we also look at what they need and adapt the course to that.</span>
+    </p>
+    <div class="grid g3">
+      <div class="card">
+        <p class="k"><span class="pap">Un luna promé</span><span class="en">One month before</span></p>
+        <h3><span class="pap">Formulario di inskripshon</span><span class="en">Registration form</span></h3>
+        <p><span class="pap">Tres pregunta: kiko bo ta studia of traha, pa kiko bo ke usa AI, i kiko bo ke sa hasi na fin di e kurso. E kontestanan ta yega na tempu pa adaptá e material.</span>
+           <span class="en">Three questions: what you study or do, what you want to use AI for, and what you want to be able to do by the end. The answers arrive in time to adapt the material.</span></p>
+      </div>
+      <div class="card">
+        <p class="k"><span class="pap">Siman 1</span><span class="en">Week 1</span></p>
+        <h3><span class="pap">Último 20 minüt</span><span class="en">Last 20 minutes</span></h3>
+        <p><span class="pap">Awor ku nan a mira kiko AI ta hasi di bèrdè, nan por bisa mihó kiko nan ke. Nos ta ahustá e simannan ku ta bini.</span>
+           <span class="en">Now that they have seen what AI actually does, they can say better what they want. We adjust the coming weeks.</span></p>
+      </div>
+      <div class="card">
+        <p class="k"><span class="pap">Siman 2</span><span class="en">Week 2</span></p>
+        <h3><span class="pap">Nan ta skohe nan kos</span><span class="en">They choose their thing</span></h3>
+        <p><span class="pap">Kada un ta skohe for di e lista i ta adaptá esaki na su situashon. For di e momento ei, tur les ta sirbi e kos ei.</span>
+           <span class="en">Each one picks from the list and adapts it to their own situation. From that moment on, every lesson serves that.</span></p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<!-- 6. PROGRAMME -->
+<section>
+  <div class="wrap">
+    <p class="eyebrow"><span class="pap">E programa</span><span class="en">The programme</span></p>
+    <h2><span class="pap">Shete siman, dos ora kada siman</span><span class="en">Seven weeks, two hours a week</span></h2>
+    <table>
+      <tbody>
+        <tr><td class="wk"><span class="pap">Siman 1</span><span class="en">Week 1</span></td>
+          <td><b><span class="pap">Kiko AI ta — i kiko e no ta</span><span class="en">What AI is — and what it is not</span></b><br>
+          <span class="small"><span class="pap">Promé kombersashon ku un chatbot, riba nan mes telefòn. UNESCO: mentalidat sentrá riba hende · Komprendé.</span>
+          <span class="en">First conversation with a chatbot, on their own phone. UNESCO: human-centred mindset · Understand.</span></span></td></tr>
+        <tr><td class="wk"><span class="pap">Siman 2</span><span class="en">Week 2</span></td>
+          <td><b><span class="pap">Kon pidi bon — i skohe bo kos</span><span class="en">How to ask well — and pick your thing</span></b><br>
+          <span class="small"><span class="pap">Skirbi instrukshon kla. Kada un ta skohe for di e lista. UNESCO: téknika i aplikashon · Apliká.</span>
+          <span class="en">Writing clear instructions. Each participant picks from the list. UNESCO: techniques and applications · Apply.</span></span></td></tr>
+        <tr><td class="wk"><span class="pap">Siman 3</span><span class="en">Week 3</span></td>
+          <td><b><span class="pap">Informashon ku bo por konfia</span><span class="en">Information you can trust</span></b><br>
+          <span class="small"><span class="pap">Ki ora AI ta inventá kos, i kon bo ta chèk esaki. UNESCO: étika di AI · Komprendé.</span>
+          <span class="en">When AI makes things up, and how to check it. UNESCO: ethics of AI · Understand.</span></span></td></tr>
+        <tr><td class="wk"><span class="pap">Siman 4</span><span class="en">Week 4</span></td>
+          <td><b><span class="pap">Bo datos i bo privasidat</span><span class="en">Your data and your privacy</span></b><br>
+          <span class="small"><span class="pap">Kiko bo no ta pega den un chat, i pakiko. UNESCO: étika di AI · Apliká.</span>
+          <span class="en">What you never paste into a chat, and why. UNESCO: ethics of AI · Apply.</span></span></td></tr>
+        <tr><td class="wk"><span class="pap">Siman 5</span><span class="en">Week 5</span></td>
+          <td><b><span class="pap">Traha riba bo kos</span><span class="en">Build your thing</span></b><br>
+          <span class="small"><span class="pap">Klas di traha. Kada un riba su propio kos, ku yudansa. UNESCO: Krea.</span>
+          <span class="en">Working session. Everyone on their own piece, with support. UNESCO: Create.</span></span></td></tr>
+        <tr><td class="wk"><span class="pap">Siman 6</span><span class="en">Week 6</span></td>
+          <td><b><span class="pap">Mehorá i praktiká</span><span class="en">Improve and rehearse</span></b><br>
+          <span class="small"><span class="pap">Feedback di otro partisipantenan, i preparashon di e presentashon. UNESCO: Krea.</span>
+          <span class="en">Feedback from the other participants, and preparing the presentation. UNESCO: Create.</span></span></td></tr>
+        <tr><td class="wk"><span class="pap">Siman 7</span><span class="en">Week 7</span></td>
+          <td><b><span class="pap">Presentashon i seremonia</span><span class="en">Presentation and ceremony</span></b><br>
+          <span class="small"><span class="pap">Kada un ta mustra loke el a traha, i ta risibí su sertifikado.</span>
+          <span class="en">Each participant shows what they made and receives their certificate.</span></span></td></tr>
+        <tr class="opt"><td class="wk">+</td>
+          <td><b><span class="pap">Seshon èkstra — opshonal</span><span class="en">Extra session — optional</span></b><br>
+          <span class="small"><span class="pap">Pa ken ku ke sigui ku e sertifikado ofisial di Google AI Essentials: un seshon di preparashon.</span>
+          <span class="en">For anyone who wants to go on to the official Google AI Essentials certificate: one preparation session.</span></span></td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<!-- 7. CERTIFICATION -->
+<section>
+  <div class="wrap">
+    <p class="eyebrow"><span class="pap">Sertifikashon</span><span class="en">Certification</span></p>
+    <h2><span class="pap">Un sertifikado konhunto — Ministerio i BMC</span><span class="en">A joint certificate — the Ministry and BMC</span></h2>
+    <div class="cert main">
+      <p class="k" style="font-size:11px;font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:var(--accent);margin:0 0 8px;">
+        <span class="pap">Sertifikado di partisipashon</span><span class="en">Certificate of participation</span></p>
+      <h3><span class="pap">Ku e logo di Ministerio di VVRP i di BMC, i un firma di e Ministerio</span>
+          <span class="en">Carrying the logos of the Ministry of VVRP and BMC, and a Ministry signature</span></h3>
+      <p class="small"><span class="pap">Kada partisipante ku ta kaba e shete simannan ta risibí esaki na e seremonia. Pa un hóben, un dokumento ku logo di gobièrnu riba dje ta konta.</span>
+        <span class="en">Every participant who completes the seven weeks receives it at the ceremony. For a young person, a document with a government logo on it counts for something.</span></p>
+      <div class="logos">
+        <img src="https://vvrp.cw/wp-content/uploads/sites/59/2016/07/Logo-VVRP-PAP-01.png" alt="Ministerio di Tráfiko, Transporte i Planifikashon Urbano">
+        <svg width="34" height="34" viewBox="0 0 64 64" aria-label="BMC" role="img">
+          <rect width="64" height="64" rx="14" fill="#1A140F"/>
+          <path d="M20 44V20h11c5 0 8 2.4 8 6.3 0 2.6-1.4 4.4-3.7 5.2 2.9.7 4.7 2.8 4.7 5.9 0 4.2-3.2 6.6-8.6 6.6H20Zm5.4-14.2h5c2.3 0 3.6-1 3.6-2.8s-1.3-2.8-3.6-2.8h-5v5.6Zm0 10h5.6c2.5 0 3.9-1.1 3.9-3s-1.4-3-3.9-3h-5.6v6Z" fill="#F2EBDF"/>
+          <circle cx="46" cy="41" r="4" fill="#FF6B2B"/>
+        </svg>
+        <span class="sig"></span>
+      </div>
+      <p class="small" style="margin-top:8px;"><span class="pap">Firma — Ministerio di VVRP</span><span class="en">Signature — Ministry of VVRP</span></p>
+    </div>
+    <div class="cert alt">
+      <p class="k" style="font-size:11px;font-weight:800;letter-spacing:.14em;text-transform:uppercase;color:var(--muted);margin:0 0 8px;">
+        <span class="pap">Opshonal · pa su mes kuenta</span><span class="en">Optional · at their own cost</span></p>
+      <h3>Google AI Essentials</h3>
+      <p class="small"><span class="pap">E kurso ta prepará nan pa e sertifikado ofisial di Google. Esaki ta riba Coursera, na Ingles, i ta kosta US$ 49 pa luna despues di 7 dia grátis. Nos ta duna un seshon èkstra pa prepará ken ku ke hasié — pero e kurso akí ta kompleto sin esei.</span>
+        <span class="en">The course prepares them for Google's official certificate. It sits on Coursera, in English, and costs US$ 49 per month after a 7-day free trial. We give one extra preparation session for anyone who wants it — but this course is complete without it.</span></p>
+    </div>
+  </div>
+</section>
+
+<!-- 8. INVESTMENT -->
+<section>
+  <div class="wrap">
+    <p class="eyebrow"><span class="pap">Inbershon</span><span class="en">Investment</span></p>
+    <h2><span class="pap">Kiko e programa ta bal, i kiko nos ta pidi</span><span class="en">What the programme is worth, and what we ask</span></h2>
+    <table>
+      <tbody>
+        <tr><td><span class="pap">Desaroyo di e kurikulum — skirbi henter e programa na Papiamentu (24 ora)</span>
+                <span class="en">Curriculum development — writing the whole programme in Papiamentu (24 hours)</span></td>
+            <td class="amt">NAf 4.200</td></tr>
+        <tr><td><span class="pap">Ehekushon di e grupo — 14 ora di klas + ± 20 ora di preparashon</span>
+                <span class="en">Delivery of the group — 14 class hours + ± 20 hours of preparation</span></td>
+            <td class="amt">NAf 5.950</td></tr>
+        <tr class="tot"><td><span class="pap">Balor total</span><span class="en">Total value</span></td>
+            <td class="amt">NAf 10.150</td></tr>
+      </tbody>
+    </table>
+    <div class="pboxes">
+      <div class="pbox">
+        <p class="v">NAf 5.150</p>
+        <p class="l"><span class="pap">Kontribushon di BMC</span><span class="en">BMC's contribution</span></p>
+      </div>
+      <div class="pbox hero">
+        <p class="v">NAf 5.000</p>
+        <p class="l"><span class="pap">Inbershon di e Ministerio</span><span class="en">The Ministry's investment</span></p>
+      </div>
+      <div class="pbox">
+        <p class="v">NAf 0</p>
+        <p class="l"><span class="pap">Pa e partisipante</span><span class="en">For the participant</span></p>
+      </div>
+    </div>
+    <div class="callout"><p>
+      <span class="pap"><b>E kurikulum ta keda di e Ministerio.</b> Henter e material skirbí na Papiamentu ta bai pa e Ministerio na fin di e kurso.</span>
+      <span class="en"><b>The curriculum stays with the Ministry.</b> All the written Papiamentu material goes to the Ministry at the end of the course.</span>
+    </p></div>
+    <p class="small" style="margin-top:14px;">
+      <span class="pap">Tur montante ta na ANG (NAf) i ta ekskluí OB.</span>
+      <span class="en">All amounts are in ANG (NAf) and exclude turnover tax (OB).</span>
+    </p>
+  </div>
+</section>
+
+<!-- 9. VENUE -->
+<section>
+  <div class="wrap">
+    <p class="eyebrow"><span class="pap">Lokal</span><span class="en">Venue</span></p>
+    <h2><span class="pap">Kiko nos mester di un sala</span><span class="en">What we need from a room</span></h2>
+    <div class="grid g3">
+      <div class="card"><p class="k"><span class="pap">Kapasidat</span><span class="en">Capacity</span></p>
+        <p><span class="pap">Sitio pa 20 partisipante ku mesa, pa nan por skirbi i traha riba nan telefòn of laptop.</span>
+           <span class="en">Room for 20 participants with tables, so they can write and work on their phone or laptop.</span></p></div>
+      <div class="card"><p class="k">Wifi</p>
+        <p><span class="pap">Internet stabil pa 21 aparato na mes momento. Esaki ta e rekisito di mas krítiko.</span>
+           <span class="en">Stable internet for 21 devices at once. This is the most critical requirement.</span></p></div>
+      <div class="card"><p class="k"><span class="pap">Pantaya</span><span class="en">Screen</span></p>
+        <p><span class="pap">Un beamer of televishon grandi, i tomada di koriente sufisiente pa karga aparato.</span>
+           <span class="en">A beamer or large TV, and enough power outlets to charge devices.</span></p></div>
+    </div>
+    <table>
+      <thead><tr>
+        <th><span class="pap">Opshon</span><span class="en">Option</span></th>
+        <th><span class="pap">Nota</span><span class="en">Note</span></th>
+      </tr></thead>
+      <tbody>
+        <tr><td><b><span class="pap">Sala di e Ministerio</span><span class="en">A Ministry room</span></b></td>
+            <td><span class="pap">E opshon di mas fásil i sin kosto èkstra. E ta pone e Ministerio den e kamber tur siman.</span>
+                <span class="en">The easiest option and at no extra cost. It puts the Ministry in the room every week.</span></td></tr>
+        <tr><td><b>The Triangle</b></td>
+            <td><span class="pap">Sala di reunion pa hür. Presio ainda pa konfirmá.</span>
+                <span class="en">Meeting room for rent. Price still to be confirmed.</span></td></tr>
+        <tr><td><b>Green Apple</b></td>
+            <td><span class="pap">Espasio di trabou kompartí. Presio ainda pa konfirmá.</span>
+                <span class="en">Co-working space. Price still to be confirmed.</span></td></tr>
+        <tr><td><b>Workspot</b></td>
+            <td><span class="pap">Espasio di trabou kompartí. Presio ainda pa konfirmá.</span>
+                <span class="en">Co-working space. Price still to be confirmed.</span></td></tr>
+        <tr><td><b>WTC Curaçao</b></td>
+            <td><span class="pap">Sala di konferensia. Presio ainda pa konfirmá.</span>
+                <span class="en">Conference room. Price still to be confirmed.</span></td></tr>
+      </tbody>
+    </table>
+    <p class="small" style="margin-top:14px;">
+      <span class="pap">E lokal no ta inkluí den e inbershon di NAf 5.000. Si e Ministerio ta usa su propio sala, no tin kosto èkstra.</span>
+      <span class="en">The venue is not included in the NAf 5.000 investment. If the Ministry uses its own room, there is no extra cost.</span>
+    </p>
+  </div>
+</section>
+
+<!-- 10. THE ASK -->
+<section class="dark">
+  <div class="wrap">
+    <p class="eyebrow"><span class="pap">E pidimentu</span><span class="en">The ask</span></p>
+    <h2><span class="pap">Sinku kos pa e Ministerio</span><span class="en">Five things from the Ministry</span></h2>
+    <p><span class="pap">Un inbershon di NAf 5.000 pa un programa ku ta bal mas ku 10.000, i kuater kos mas ku no ta kosta plaka.</span>
+       <span class="en">An investment of NAf 5.000 in a programme worth more than 10.000, plus four things that cost no money.</span></p>
+
+    <div class="askrow"><span class="num paid">1</span><div class="bd">
+      <h3><span class="pap">E inbershon — NAf 5.000</span><span class="en">The investment — NAf 5.000</span></h3>
+      <p><span class="pap">Pa e kurikulum kompleto na Papiamentu (ku ta keda di e Ministerio) i e grupo di 20 partisipante.</span>
+         <span class="en">For the complete Papiamentu curriculum (which stays with the Ministry) and the group of 20 participants.</span></p></div></div>
+
+    <div class="askrow"><span class="num paid">2</span><div class="bd">
+      <h3><span class="pap">E lokal</span><span class="en">The venue</span></h3>
+      <p><span class="pap">Un sala pa shete seshon di 2 ora. Si e Ministerio tin un sala propio, esaki no ta kosta nada.</span>
+         <span class="en">A room for seven 2-hour sessions. If the Ministry has its own room, this costs nothing.</span></p></div></div>
+
+    <div class="askrow"><span class="num">3</span><div class="bd">
+      <h3><span class="pap">E logo i e firma riba e sertifikado</span><span class="en">The logo and the signature on the certificate</span></h3>
+      <p><span class="pap">Permiso pa usa e logo di Ministerio di VVRP riba e sertifikado konhunto, i un firma di e Ministerio.</span>
+         <span class="en">Permission to use the Ministry of VVRP logo on the joint certificate, and a Ministry signature.</span></p></div></div>
+
+    <div class="askrow"><span class="num">4</span><div class="bd">
+      <h3><span class="pap">Yudansa pa alkansá e hóbennan</span><span class="en">Help reaching the young people</span></h3>
+      <p><span class="pap">E kanalnan di komunikashon di e Ministerio pa yena e 20 lugánan ku hóben ku di bèrdè ke.</span>
+         <span class="en">The Ministry's communication channels, to fill the 20 places with young people who genuinely want it.</span></p></div></div>
+
+    <div class="askrow"><span class="num">5</span><div class="bd">
+      <h3><span class="pap">Presensia na e seremonia</span><span class="en">Presence at the ceremony</span></h3>
+      <p><span class="pap">Un representante di e Ministerio na siman 7, pa entregá e sertifikadonan personalmente.</span>
+         <span class="en">A Ministry representative in week 7, to hand over the certificates in person.</span></p></div></div>
+
+    <div class="stats">
+      <div class="stat"><p class="v">NAf 10.150</p><p class="l"><span class="pap">Balor total</span><span class="en">Total value</span></p></div>
+      <div class="stat"><p class="v">NAf 5.150</p><p class="l"><span class="pap">Kontribushon di BMC</span><span class="en">BMC's contribution</span></p></div>
+      <div class="stat"><p class="v">NAf 5.000</p><p class="l"><span class="pap">Inbershon di e Ministerio</span><span class="en">The Ministry's investment</span></p></div>
+      <div class="stat"><p class="v">NAf 0</p><p class="l"><span class="pap">Pa e partisipante</span><span class="en">For the participant</span></p></div>
+    </div>
+
+    <div class="callout"><p>
+      <span class="pap">Pa NAf 250 pa partisipante, e Ministerio ta haña un kurikulum di AI na Papiamentu ku ta keda di dje, i 20 hóben ku a traha algu ku nan mes por usa.</span>
+      <span class="en">For NAf 250 per participant, the Ministry gets an AI curriculum in Papiamentu that stays theirs, and 20 young people who built something they can actually use.</span>
+    </p></div>
+  </div>
+</section>
+
+<!-- 11. TIMELINE -->
+<section>
+  <div class="wrap">
+    <p class="eyebrow"><span class="pap">Kalènder</span><span class="en">Timeline</span></p>
+    <h2><span class="pap">Di aprobashon pa seremonia</span><span class="en">From approval to ceremony</span></h2>
+    <p class="small"><span class="pap">E kalènder akí ta tentativo — e Ministerio ta disidí ki dia e kurso ta kuminsá.</span>
+      <span class="en">This timeline is tentative — the Ministry decides when the course starts.</span></p>
+    <table>
+      <tbody>
+        <tr><td class="wk" style="width:190px;"><span class="pap">Ora e Ministerio aprobá</span><span class="en">On Ministry approval</span></td>
+            <td><span class="pap">Aprobashon · konfirmá e lokal</span><span class="en">Approval · confirm the venue</span></td></tr>
+        <tr><td class="wk" style="width:190px;"><span class="pap">2–4 siman despues</span><span class="en">2–4 weeks later</span></td>
+            <td><span class="pap">BMC ta skirbi henter e kurikulum na Papiamentu</span><span class="en">BMC writes the entire curriculum in Papiamentu</span></td></tr>
+        <tr><td class="wk" style="width:190px;"><span class="pap">Un luna promé</span><span class="en">One month before</span></td>
+            <td><span class="pap">Habri inskripshon · formulario di ko-diseño · selekshon di e 20</span><span class="en">Registration opens · co-design form · selection of the 20</span></td></tr>
+        <tr><td class="wk" style="width:190px;"><span class="pap">Siman 1 pa 4</span><span class="en">Weeks 1 to 4</span></td>
+            <td><span class="pap">Teoria i práktika</span><span class="en">Theory and practice</span></td></tr>
+        <tr><td class="wk" style="width:190px;"><span class="pap">Siman 5 pa 7</span><span class="en">Weeks 5 to 7</span></td>
+            <td><span class="pap">Traha, presentá, seremonia</span><span class="en">Build, present, ceremony</span></td></tr>
+        <tr><td class="wk" style="width:190px;"><span class="pap">Despues di e kurso</span><span class="en">After the course</span></td>
+            <td><span class="pap">Entrega di e kurikulum · seshon èkstra opshonal</span><span class="en">Curriculum handover · optional extra session</span></td></tr>
+      </tbody>
+    </table>
+  </div>
+</section>
+
+<div class="wrap foot">
+  <p style="margin:0;font-size:13px;color:var(--muted);">
+    Bakhuis Management &amp; Consultancy · Kòrsou · jair@bakhuis.org
+  </p>
+</div>
+
+</div>
+</body>
+</html>
